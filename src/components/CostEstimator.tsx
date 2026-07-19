@@ -113,21 +113,6 @@ export default function CostEstimator() {
     <main className="min-h-screen bg-slate-50 text-slate-700 dark:bg-slate-950 dark:text-slate-300">
       <div className="pointer-events-none fixed inset-x-0 top-0 h-96 bg-[radial-gradient(circle_at_top_left,_rgba(37,99,235,0.14),_transparent_55%)]" />
 
-      <div className="relative border-b border-blue-500/20 bg-black">
-        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
-          <img
-            src={`${import.meta.env.BASE_URL}logo-mark.png`}
-            alt=""
-            className="h-9 w-auto sm:h-10"
-            width={510}
-            height={360}
-          />
-          <span className="text-lg font-bold tracking-tight text-white sm:text-xl">
-            Bonoan Enterprises
-          </span>
-        </div>
-      </div>
-
       <header className="relative mx-auto max-w-7xl px-4 pb-10 pt-10 sm:px-6 lg:px-8 lg:pb-14 lg:pt-16">
         <div className="max-w-3xl">
           <h1 className="text-4xl font-black tracking-tight text-slate-950 dark:text-white sm:text-5xl lg:text-6xl">
