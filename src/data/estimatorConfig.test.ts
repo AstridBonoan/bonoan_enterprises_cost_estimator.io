@@ -66,6 +66,28 @@ describe('calculateEstimate', () => {
     })
   })
 
+  it('uses one firm package price in the summary at the Advanced ceiling', () => {
+    const selections = {
+      ...defaultSelections,
+      pages: 12,
+      standardForms: 4,
+      advancedForms: 4,
+      payment: true,
+      emailAutomation: true,
+      calendarBooking: true,
+      integrationLevel: 'advanced' as const,
+      userAuthentication: true,
+      multiUserDashboard: true,
+    }
+    const summary = summarizeSelections(
+      selections,
+      calculateEstimate(selections),
+    )
+
+    expect(summary).toContain('Advanced package price: $1,200')
+    expect(summary).not.toContain('Estimated investment:')
+  })
+
   it('includes selections and prices in the submission summary', () => {
     const selections = {
       ...defaultSelections,

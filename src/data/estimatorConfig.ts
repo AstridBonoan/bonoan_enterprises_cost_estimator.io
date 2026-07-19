@@ -156,6 +156,7 @@ export function summarizeSelections(
   estimate: Estimate,
 ): string {
   const project = estimatorConfig.projectTypes[selections.projectType]
+  const isAtAdvancedCeiling = estimate.midpoint === project.maxPrice
   const selectedFeatures = [
     selections.payment && 'Stripe/payment checkout',
     selections.emailAutomation && 'Email automation',
@@ -171,7 +172,9 @@ export function summarizeSelections(
     `Advanced forms: ${selections.advancedForms}`,
     `Integration level: ${selections.integrationLevel}`,
     `Selected features: ${selectedFeatures.length ? selectedFeatures.join(', ') : 'None'}`,
-    `Estimated investment: $${estimate.low.toLocaleString()}–$${estimate.high.toLocaleString()}`,
+    isAtAdvancedCeiling
+      ? `Advanced package price: $${estimate.midpoint.toLocaleString()}`
+      : `Estimated investment: $${estimate.low.toLocaleString()}–$${estimate.high.toLocaleString()}`,
     `Recommended offer: $${estimate.midpoint.toLocaleString()}`,
   ]
     .filter(Boolean)

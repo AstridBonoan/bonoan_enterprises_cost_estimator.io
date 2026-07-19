@@ -105,7 +105,9 @@ export default function CostEstimator() {
     () => summarizeSelections(selections, estimate),
     [selections, estimate],
   )
+  const project = estimatorConfig.projectTypes[selections.projectType]
   const addOns = estimatorConfig.addOns[selections.projectType]
+  const isAtAdvancedCeiling = estimate.midpoint === project.maxPrice
 
   const update = <Key extends keyof EstimatorSelections>(
     key: Key,
@@ -426,21 +428,46 @@ export default function CostEstimator() {
               <p className="text-sm font-bold uppercase tracking-[0.18em] text-blue-300">
                 {isLocked ? 'Submitted project estimate' : 'Live project estimate'}
               </p>
-              <p className="mt-5 text-sm text-slate-300">Estimated investment</p>
+              <p className="mt-5 text-sm text-slate-300">
+                {isAtAdvancedCeiling
+                  ? 'Advanced package price'
+                  : 'Estimated investment'}
+              </p>
               <p className="mt-1 text-3xl font-black tracking-tight sm:text-4xl">
-                {currency.format(estimate.low)} – {currency.format(estimate.high)}
+                {isAtAdvancedCeiling
+                  ? currency.format(estimate.midpoint)
+                  : `${currency.format(estimate.low)} – ${currency.format(estimate.high)}`}
               </p>
               <p className="mt-6 border-l-2 border-blue-400 pl-4 text-lg leading-7 text-slate-100">
-                For the scope described, I&apos;d be happy to do this at{' '}
-                <strong className="text-white">{currency.format(estimate.midpoint)}</strong>.
+                {isAtAdvancedCeiling ? (
+                  <>
+                    For the scope described, this is the amount I am willing to do
+                    it for.
+                  </>
+                ) : (
+                  <>
+                    For the scope described, I&apos;d be happy to do this at{' '}
+                    <strong className="text-white">
+                      {currency.format(estimate.midpoint)}
+                    </strong>
+                    .
+                  </>
+                )}
               </p>
             </div>
 
             <div className="space-y-4 border-b border-white/10 p-6 text-sm leading-6 text-slate-300 sm:p-8">
-              <p>
-                If the project needs heavier integrations, more forms, or complex
-                workflows, it moves toward the top of the range.
-              </p>
+              {isAtAdvancedCeiling ? (
+                <p>
+                  This scope reaches the Advanced package ceiling, so a lower
+                  price range is not shown.
+                </p>
+              ) : (
+                <p>
+                  If the project needs heavier integrations, more forms, or
+                  complex workflows, it moves toward the top of the range.
+                </p>
+              )}
               <p>
                 This is an estimate to give you a ballpark. Final pricing is
                 confirmed after a short consultation.
