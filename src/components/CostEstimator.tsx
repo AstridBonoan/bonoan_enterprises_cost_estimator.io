@@ -97,7 +97,7 @@ export default function CostEstimator() {
   const [selections, setSelections] =
     useState<EstimatorSelections>(defaultSelections)
   // Formspree form ID for Bonoan Enterprises (https://formspree.io/f/mrenqoza).
-  const [formState, handleSubmit] = useForm('mrenqoza')
+  const [formState, handleSubmit, resetForm] = useForm('mrenqoza')
   const isLocked = formState.succeeded
 
   const estimate = useMemo(() => calculateEstimate(selections), [selections])
@@ -121,6 +121,12 @@ export default function CostEstimator() {
       projectType,
       pages: projectType === 'website' ? Math.max(current.pages, 3) : 0,
     }))
+  }
+
+  const startAnotherEstimate = () => {
+    resetForm()
+    setSelections(defaultSelections)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
@@ -447,12 +453,26 @@ export default function CostEstimator() {
 
             <div className="p-6 sm:p-8">
               {formState.succeeded ? (
-                <div role="status" className="rounded-xl border border-emerald-400/30 bg-emerald-400/10 p-5">
-                  <p className="font-bold text-emerald-300">Thanks for reaching out!</p>
-                  <p className="mt-2 text-sm leading-6 text-emerald-100/80">
-                    Your project details and estimate were sent. We&apos;ll be in
-                    touch to discuss the final scope.
-                  </p>
+                <div>
+                  <div
+                    role="status"
+                    className="rounded-xl border border-emerald-400/30 bg-emerald-400/10 p-5"
+                  >
+                    <p className="font-bold text-emerald-300">
+                      Thanks for reaching out!
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-emerald-100/80">
+                      Your project details and estimate were sent. We&apos;ll be in
+                      touch to discuss the final scope.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={startAnotherEstimate}
+                    className="mt-4 w-full rounded-xl border border-blue-400/50 bg-blue-500/10 px-5 py-3.5 font-bold text-blue-200 transition hover:border-blue-300 hover:bg-blue-500/20 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-400/20"
+                  >
+                    Get Another Estimate
+                  </button>
                 </div>
               ) : (
                 <>
