@@ -27,15 +27,16 @@ feature, and displays a range of about ±10% around the recommended offer.
 
 ## Connect Formspree
 
-In `src/components/CostEstimator.tsx`, replace:
+The lead form submits to the Bonoan Enterprises Formspree endpoint
+(`https://formspree.io/f/mrenqoza`) via `@formspree/react`. To change it, update
+the form ID in `src/components/CostEstimator.tsx`:
 
 ```ts
-useForm('REPLACE_WITH_FORMSPREE_ID')
+useForm('mrenqoza')
 ```
 
-with the form ID from the Bonoan Enterprises Formspree dashboard. The form sends
-the lead's contact information, message, selected scope, displayed range, and
-recommended offer.
+The form sends the lead's contact information, message, selected scope, displayed
+range, and recommended offer.
 
 ## GitHub Pages: Deploy from a branch
 
