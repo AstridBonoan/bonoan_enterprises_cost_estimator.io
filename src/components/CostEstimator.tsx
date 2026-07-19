@@ -137,6 +137,20 @@ export default function CostEstimator() {
             Tell us what you need and get a practical ballpark estimate in a few
             minutes—no hourly-rate math or surprise-sized ranges.
           </p>
+          <div className="mt-8 inline-flex items-center gap-3 rounded-full bg-white py-2.5 pl-3 pr-6 shadow-md ring-1 ring-slate-200">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-black">
+              <img
+                src={`${import.meta.env.BASE_URL}logo-mark.png`}
+                alt=""
+                className="h-5 w-auto"
+                width={510}
+                height={360}
+              />
+            </span>
+            <span className="text-sm font-bold text-slate-900">
+              Powered by Bonoan Enterprises
+            </span>
+          </div>
         </div>
       </header>
 
