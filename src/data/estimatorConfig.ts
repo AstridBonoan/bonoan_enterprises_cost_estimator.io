@@ -45,20 +45,39 @@ export const estimatorConfig = {
       ],
     },
   },
+  // Add-on prices are calibrated so selecting every option at the UI maximum
+  // lands exactly on the Advanced package price for that project type.
   addOns: {
-    extraPage: 125,
-    standardForm: 150,
-    advancedForm: 275,
-    payment: 300,
-    emailAutomation: 250,
-    calendarBooking: 300,
-    integration: {
-      none: 0,
-      light: 250,
-      advanced: 600,
+    website: {
+      extraPage: 25,
+      standardForm: 25,
+      advancedForm: 25,
+      payment: 50,
+      emailAutomation: 25,
+      calendarBooking: 25,
+      integration: {
+        none: 0,
+        light: 25,
+        advanced: 50,
+      },
+      userAuthentication: 50,
+      multiUserDashboard: 75,
     },
-    userAuthentication: 700,
-    multiUserDashboard: 1000,
+    saas: {
+      extraPage: 0,
+      standardForm: 50,
+      advancedForm: 100,
+      payment: 200,
+      emailAutomation: 150,
+      calendarBooking: 200,
+      integration: {
+        none: 0,
+        light: 150,
+        advanced: 300,
+      },
+      userAuthentication: 350,
+      multiUserDashboard: 400,
+    },
   },
 } as const
 
@@ -90,6 +109,7 @@ const clamp = (value: number, min: number, max: number) =>
 export function calculateEstimate(selections: EstimatorSelections): Estimate {
   const { projectTypes, addOns, rangePercent, roundingIncrement } = estimatorConfig
   const project = projectTypes[selections.projectType]
+  const projectAddOns = addOns[selections.projectType]
   const extraPages =
     selections.projectType === 'website'
       ? Math.max(0, selections.pages - project.includedPages)
@@ -97,15 +117,15 @@ export function calculateEstimate(selections: EstimatorSelections): Estimate {
 
   const rawMidpoint =
     project.basePrice +
-    extraPages * addOns.extraPage +
-    selections.standardForms * addOns.standardForm +
-    selections.advancedForms * addOns.advancedForm +
-    (selections.payment ? addOns.payment : 0) +
-    (selections.emailAutomation ? addOns.emailAutomation : 0) +
-    (selections.calendarBooking ? addOns.calendarBooking : 0) +
-    addOns.integration[selections.integrationLevel] +
-    (selections.userAuthentication ? addOns.userAuthentication : 0) +
-    (selections.multiUserDashboard ? addOns.multiUserDashboard : 0)
+    extraPages * projectAddOns.extraPage +
+    selections.standardForms * projectAddOns.standardForm +
+    selections.advancedForms * projectAddOns.advancedForm +
+    (selections.payment ? projectAddOns.payment : 0) +
+    (selections.emailAutomation ? projectAddOns.emailAutomation : 0) +
+    (selections.calendarBooking ? projectAddOns.calendarBooking : 0) +
+    projectAddOns.integration[selections.integrationLevel] +
+    (selections.userAuthentication ? projectAddOns.userAuthentication : 0) +
+    (selections.multiUserDashboard ? projectAddOns.multiUserDashboard : 0)
 
   // Keep estimates inside the published Basic–Advanced package band.
   const midpoint = clamp(

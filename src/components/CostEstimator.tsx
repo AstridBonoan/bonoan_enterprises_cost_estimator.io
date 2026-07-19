@@ -105,6 +105,7 @@ export default function CostEstimator() {
     () => summarizeSelections(selections, estimate),
     [selections, estimate],
   )
+  const addOns = estimatorConfig.addOns[selections.projectType]
 
   const update = <Key extends keyof EstimatorSelections>(
     key: Key,
@@ -236,7 +237,7 @@ export default function CostEstimator() {
                     <option key={count} value={count}>
                       {count} {count === 1 ? 'page' : 'pages'}
                       {count > 3
-                        ? ` (+${currency.format((count - 3) * estimatorConfig.addOns.extraPage)})`
+                        ? ` (+${currency.format((count - 3) * addOns.extraPage)})`
                         : ''}
                     </option>
                   ),
@@ -273,7 +274,7 @@ export default function CostEstimator() {
                 >
                   {[0, 1, 2, 3, 4].map((count) => (
                     <option key={count} value={count}>
-                      {count} {count ? `(+${currency.format(count * estimatorConfig.addOns.standardForm)})` : ''}
+                      {count} {count ? `(+${currency.format(count * addOns.standardForm)})` : ''}
                     </option>
                   ))}
                 </select>
@@ -295,7 +296,7 @@ export default function CostEstimator() {
                 >
                   {[0, 1, 2, 3, 4].map((count) => (
                     <option key={count} value={count}>
-                      {count} {count ? `(+${currency.format(count * estimatorConfig.addOns.advancedForm)})` : ''}
+                      {count} {count ? `(+${currency.format(count * addOns.advancedForm)})` : ''}
                     </option>
                   ))}
                 </select>
@@ -315,7 +316,7 @@ export default function CostEstimator() {
                 disabled={isLocked}
                 label="Payment / Stripe checkout"
                 detail="A secure checkout flow for products or services."
-                price={estimatorConfig.addOns.payment}
+                price={addOns.payment}
                 onChange={(checked) => update('payment', checked)}
               />
               <FeatureCheckbox
@@ -323,7 +324,7 @@ export default function CostEstimator() {
                 disabled={isLocked}
                 label="Email automation"
                 detail="Automated follow-ups, confirmations, or notifications."
-                price={estimatorConfig.addOns.emailAutomation}
+                price={addOns.emailAutomation}
                 onChange={(checked) => update('emailAutomation', checked)}
               />
               <FeatureCheckbox
@@ -331,7 +332,7 @@ export default function CostEstimator() {
                 disabled={isLocked}
                 label="Calendar / booking integration"
                 detail="Scheduling connected to an external calendar."
-                price={estimatorConfig.addOns.calendarBooking}
+                price={addOns.calendarBooking}
                 onChange={(checked) => update('calendarBooking', checked)}
               />
             </div>
@@ -351,7 +352,7 @@ export default function CostEstimator() {
                   ['advanced', 'Advanced', 'Custom or multi-step data flow'],
                 ] as const
               ).map(([value, label, detail]) => {
-                const cost = estimatorConfig.addOns.integration[value]
+                const cost = addOns.integration[value]
                 return (
                   <label
                     key={value}
@@ -401,7 +402,7 @@ export default function CostEstimator() {
                 disabled={isLocked}
                 label="User authentication / accounts"
                 detail="Sign-up, sign-in, password recovery, and protected content."
-                price={estimatorConfig.addOns.userAuthentication}
+                price={addOns.userAuthentication}
                 onChange={(checked) => update('userAuthentication', checked)}
               />
               <FeatureCheckbox
@@ -409,7 +410,7 @@ export default function CostEstimator() {
                 disabled={isLocked}
                 label="Multi-user dashboard"
                 detail="Role-aware views, user-specific data, and management screens."
-                price={estimatorConfig.addOns.multiUserDashboard}
+                price={addOns.multiUserDashboard}
                 onChange={(checked) => update('multiUserDashboard', checked)}
               />
             </div>

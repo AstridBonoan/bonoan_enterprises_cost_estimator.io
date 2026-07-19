@@ -20,10 +20,10 @@ describe('calculateEstimate', () => {
       pages: 6,
     })
 
-    expect(estimate.midpoint).toBe(875)
+    expect(estimate.midpoint).toBe(575)
   })
 
-  it('caps website estimates at the Advanced package price', () => {
+  it('reaches the website Advanced package price when every option is maxed', () => {
     const estimate = calculateEstimate({
       ...defaultSelections,
       pages: 12,
@@ -37,26 +37,33 @@ describe('calculateEstimate', () => {
       multiUserDashboard: true,
     })
 
-    expect(estimate.midpoint).toBe(1200)
-    expect(estimate.low).toBe(1075)
-    expect(estimate.high).toBe(1200)
+    expect(estimate).toEqual({
+      midpoint: 1200,
+      low: 1075,
+      high: 1200,
+    })
   })
 
-  it('caps SaaS estimates at the Advanced package price', () => {
+  it('reaches the SaaS Advanced package price when every option is maxed', () => {
     const estimate = calculateEstimate({
       ...defaultSelections,
       projectType: 'saas',
       pages: 10,
-      advancedForms: 1,
+      standardForms: 4,
+      advancedForms: 4,
       payment: true,
+      emailAutomation: true,
+      calendarBooking: true,
       integrationLevel: 'advanced',
       userAuthentication: true,
       multiUserDashboard: true,
     })
 
-    expect(estimate.midpoint).toBe(3200)
-    expect(estimate.low).toBe(2875)
-    expect(estimate.high).toBe(3200)
+    expect(estimate).toEqual({
+      midpoint: 3200,
+      low: 2875,
+      high: 3200,
+    })
   })
 
   it('includes selections and prices in the submission summary', () => {
@@ -71,6 +78,6 @@ describe('calculateEstimate', () => {
 
     expect(summary).toContain('Project type: Website Creation')
     expect(summary).toContain('Email automation')
-    expect(summary).toContain('Recommended offer: $750')
+    expect(summary).toContain('Recommended offer: $525')
   })
 })
