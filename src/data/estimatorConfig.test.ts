@@ -6,10 +6,10 @@ import {
 } from './estimatorConfig'
 
 describe('calculateEstimate', () => {
-  it('uses the website base price and a tight range', () => {
+  it('uses the website base price and stays at or above Basic', () => {
     expect(calculateEstimate(defaultSelections)).toEqual({
       midpoint: 500,
-      low: 450,
+      low: 500,
       high: 550,
     })
   })
@@ -23,7 +23,26 @@ describe('calculateEstimate', () => {
     expect(estimate.midpoint).toBe(875)
   })
 
-  it('adds feature complexity to a SaaS project', () => {
+  it('caps website estimates at the Advanced package price', () => {
+    const estimate = calculateEstimate({
+      ...defaultSelections,
+      pages: 12,
+      standardForms: 4,
+      advancedForms: 4,
+      payment: true,
+      emailAutomation: true,
+      calendarBooking: true,
+      integrationLevel: 'advanced',
+      userAuthentication: true,
+      multiUserDashboard: true,
+    })
+
+    expect(estimate.midpoint).toBe(1200)
+    expect(estimate.low).toBe(1075)
+    expect(estimate.high).toBe(1200)
+  })
+
+  it('caps SaaS estimates at the Advanced package price', () => {
     const estimate = calculateEstimate({
       ...defaultSelections,
       projectType: 'saas',
@@ -35,9 +54,9 @@ describe('calculateEstimate', () => {
       multiUserDashboard: true,
     })
 
-    expect(estimate.midpoint).toBe(3875)
-    expect(estimate.low).toBe(3500)
-    expect(estimate.high).toBe(4275)
+    expect(estimate.midpoint).toBe(3200)
+    expect(estimate.low).toBe(2875)
+    expect(estimate.high).toBe(3200)
   })
 
   it('includes selections and prices in the submission summary', () => {

@@ -23,7 +23,11 @@ rounding are in `src/data/estimatorConfig.ts`. Edit that file to change pricing
 without touching the estimator UI.
 
 The estimator starts at the selected project type's base price, adds each selected
-feature, and displays a range of about ±10% around the recommended offer.
+feature, and displays a range of about ±10% around the recommended offer. Final
+estimates are clamped to the published package band:
+
+- Website Creation: **$500 – $1,200**
+- SaaS Tools: **$1,000 – $3,200**
 
 ## Connect Formspree
 

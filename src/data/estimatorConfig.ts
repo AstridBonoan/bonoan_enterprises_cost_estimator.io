@@ -21,6 +21,8 @@ export const estimatorConfig = {
     website: {
       label: 'Website Creation',
       basePrice: 500,
+      minPrice: 500,
+      maxPrice: 1200,
       includedPages: 3,
       description: 'A polished, responsive marketing website built around your goals.',
       referenceTiers: [
@@ -32,6 +34,8 @@ export const estimatorConfig = {
     saas: {
       label: 'SaaS Tool',
       basePrice: 1000,
+      minPrice: 1000,
+      maxPrice: 3200,
       includedPages: 0,
       description: 'A focused software tool that automates a workflow or business process.',
       referenceTiers: [
@@ -80,6 +84,9 @@ export interface Estimate {
 const roundTo = (value: number, increment: number) =>
   Math.round(value / increment) * increment
 
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value))
+
 export function calculateEstimate(selections: EstimatorSelections): Estimate {
   const { projectTypes, addOns, rangePercent, roundingIncrement } = estimatorConfig
   const project = projectTypes[selections.projectType]
@@ -100,12 +107,27 @@ export function calculateEstimate(selections: EstimatorSelections): Estimate {
     (selections.userAuthentication ? addOns.userAuthentication : 0) +
     (selections.multiUserDashboard ? addOns.multiUserDashboard : 0)
 
-  const midpoint = roundTo(rawMidpoint, roundingIncrement)
+  // Keep estimates inside the published Basic–Advanced package band.
+  const midpoint = clamp(
+    roundTo(rawMidpoint, roundingIncrement),
+    project.minPrice,
+    project.maxPrice,
+  )
+  const low = clamp(
+    roundTo(midpoint * (1 - rangePercent), roundingIncrement),
+    project.minPrice,
+    project.maxPrice,
+  )
+  const high = clamp(
+    roundTo(midpoint * (1 + rangePercent), roundingIncrement),
+    project.minPrice,
+    project.maxPrice,
+  )
 
   return {
     midpoint,
-    low: roundTo(midpoint * (1 - rangePercent), roundingIncrement),
-    high: roundTo(midpoint * (1 + rangePercent), roundingIncrement),
+    low: Math.min(low, midpoint),
+    high: Math.max(high, midpoint),
   }
 }
 
