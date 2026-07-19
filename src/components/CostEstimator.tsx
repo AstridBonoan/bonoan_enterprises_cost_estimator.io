@@ -53,21 +53,30 @@ function FeatureCheckbox({
   label,
   detail,
   price,
+  disabled = false,
   onChange,
 }: {
   checked: boolean
   label: string
   detail: string
   price: number
+  disabled?: boolean
   onChange: (checked: boolean) => void
 }) {
   return (
-    <label className="group flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 transition hover:border-blue-400 dark:border-slate-700 dark:hover:border-blue-500">
+    <label
+      className={`group flex items-start gap-3 rounded-xl border border-slate-200 p-4 transition dark:border-slate-700 ${
+        disabled
+          ? 'cursor-not-allowed opacity-70'
+          : 'cursor-pointer hover:border-blue-400 dark:hover:border-blue-500'
+      }`}
+    >
       <input
         type="checkbox"
         checked={checked}
+        disabled={disabled}
         onChange={(event) => onChange(event.target.checked)}
-        className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+        className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 disabled:cursor-not-allowed"
       />
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-center justify-between gap-2">
@@ -89,6 +98,7 @@ export default function CostEstimator() {
     useState<EstimatorSelections>(defaultSelections)
   // Formspree form ID for Bonoan Enterprises (https://formspree.io/f/mrenqoza).
   const [formState, handleSubmit] = useForm('mrenqoza')
+  const isLocked = formState.succeeded
 
   const estimate = useMemo(() => calculateEstimate(selections), [selections])
   const summary = useMemo(
@@ -99,9 +109,13 @@ export default function CostEstimator() {
   const update = <Key extends keyof EstimatorSelections>(
     key: Key,
     value: EstimatorSelections[Key],
-  ) => setSelections((current) => ({ ...current, [key]: value }))
+  ) => {
+    if (isLocked) return
+    setSelections((current) => ({ ...current, [key]: value }))
+  }
 
   const selectProjectType = (projectType: ProjectType) => {
+    if (isLocked) return
     setSelections((current) => ({
       ...current,
       projectType,
@@ -141,6 +155,16 @@ export default function CostEstimator() {
 
       <div className="relative mx-auto grid max-w-7xl items-start gap-8 px-4 pb-20 sm:px-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)] lg:px-8">
         <div className="space-y-5">
+          {isLocked && (
+            <div
+              role="status"
+              className="rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm leading-6 text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200"
+            >
+              Your estimate has been sent. The selections below are locked to
+              match what we received.
+            </div>
+          )}
+
           <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-7">
             <SectionHeading
               number={1}
@@ -157,11 +181,12 @@ export default function CostEstimator() {
                       key={projectType}
                       type="button"
                       aria-pressed={active}
+                      disabled={isLocked}
                       onClick={() => selectProjectType(projectType)}
-                      className={`rounded-xl border p-5 text-left outline-none transition focus:ring-4 focus:ring-blue-500/20 ${
+                      className={`rounded-xl border p-5 text-left outline-none transition focus:ring-4 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-70 ${
                         active
                           ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500 dark:bg-blue-950/40'
-                          : 'border-slate-200 hover:border-blue-300 dark:border-slate-700 dark:hover:border-blue-700'
+                          : 'border-slate-200 hover:border-blue-300 disabled:hover:border-slate-200 dark:border-slate-700 dark:hover:border-blue-700 dark:disabled:hover:border-slate-700'
                       }`}
                     >
                       <span className="block font-bold text-slate-950 dark:text-white">
@@ -196,8 +221,9 @@ export default function CostEstimator() {
               <select
                 id="pages"
                 value={selections.pages}
+                disabled={isLocked}
                 onChange={(event) => update('pages', Number(event.target.value))}
-                className={inputClasses}
+                className={`${inputClasses} disabled:cursor-not-allowed disabled:opacity-70`}
               >
                 {Array.from({ length: 12 }, (_, index) => index + 1).map(
                   (count) => (
@@ -233,10 +259,11 @@ export default function CostEstimator() {
                 </span>
                 <select
                   value={selections.standardForms}
+                  disabled={isLocked}
                   onChange={(event) =>
                     update('standardForms', Number(event.target.value))
                   }
-                  className={inputClasses}
+                  className={`${inputClasses} disabled:cursor-not-allowed disabled:opacity-70`}
                 >
                   {[0, 1, 2, 3, 4].map((count) => (
                     <option key={count} value={count}>
@@ -254,10 +281,11 @@ export default function CostEstimator() {
                 </span>
                 <select
                   value={selections.advancedForms}
+                  disabled={isLocked}
                   onChange={(event) =>
                     update('advancedForms', Number(event.target.value))
                   }
-                  className={inputClasses}
+                  className={`${inputClasses} disabled:cursor-not-allowed disabled:opacity-70`}
                 >
                   {[0, 1, 2, 3, 4].map((count) => (
                     <option key={count} value={count}>
@@ -278,6 +306,7 @@ export default function CostEstimator() {
             <div className="space-y-3">
               <FeatureCheckbox
                 checked={selections.payment}
+                disabled={isLocked}
                 label="Payment / Stripe checkout"
                 detail="A secure checkout flow for products or services."
                 price={estimatorConfig.addOns.payment}
@@ -285,6 +314,7 @@ export default function CostEstimator() {
               />
               <FeatureCheckbox
                 checked={selections.emailAutomation}
+                disabled={isLocked}
                 label="Email automation"
                 detail="Automated follow-ups, confirmations, or notifications."
                 price={estimatorConfig.addOns.emailAutomation}
@@ -292,6 +322,7 @@ export default function CostEstimator() {
               />
               <FeatureCheckbox
                 checked={selections.calendarBooking}
+                disabled={isLocked}
                 label="Calendar / booking integration"
                 detail="Scheduling connected to an external calendar."
                 price={estimatorConfig.addOns.calendarBooking}
@@ -318,7 +349,9 @@ export default function CostEstimator() {
                 return (
                   <label
                     key={value}
-                    className={`cursor-pointer rounded-xl border p-4 transition ${
+                    className={`rounded-xl border p-4 transition ${
+                      isLocked ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'
+                    } ${
                       selections.integrationLevel === value
                         ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500 dark:bg-blue-950/40'
                         : 'border-slate-200 dark:border-slate-700'
@@ -329,6 +362,7 @@ export default function CostEstimator() {
                       name="integrationLevel"
                       value={value}
                       checked={selections.integrationLevel === value}
+                      disabled={isLocked}
                       onChange={() =>
                         update('integrationLevel', value as IntegrationLevel)
                       }
@@ -358,6 +392,7 @@ export default function CostEstimator() {
             <div className="space-y-3">
               <FeatureCheckbox
                 checked={selections.userAuthentication}
+                disabled={isLocked}
                 label="User authentication / accounts"
                 detail="Sign-up, sign-in, password recovery, and protected content."
                 price={estimatorConfig.addOns.userAuthentication}
@@ -365,6 +400,7 @@ export default function CostEstimator() {
               />
               <FeatureCheckbox
                 checked={selections.multiUserDashboard}
+                disabled={isLocked}
                 label="Multi-user dashboard"
                 detail="Role-aware views, user-specific data, and management screens."
                 price={estimatorConfig.addOns.multiUserDashboard}
@@ -381,7 +417,7 @@ export default function CostEstimator() {
           >
             <div className="border-b border-white/10 bg-gradient-to-br from-blue-600/30 to-transparent p-6 sm:p-8">
               <p className="text-sm font-bold uppercase tracking-[0.18em] text-blue-300">
-                Live project estimate
+                {isLocked ? 'Submitted project estimate' : 'Live project estimate'}
               </p>
               <p className="mt-5 text-sm text-slate-300">Estimated investment</p>
               <p className="mt-1 text-3xl font-black tracking-tight sm:text-4xl">
