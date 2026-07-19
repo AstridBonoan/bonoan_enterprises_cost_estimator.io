@@ -20,10 +20,31 @@ describe('calculateEstimate', () => {
       pages: 6,
     })
 
-    expect(estimate.midpoint).toBe(575)
+    expect(estimate.midpoint).toBe(625)
   })
 
-  it('reaches the website Advanced package price when every option is maxed', () => {
+  it('reaches the website Advanced package price at 8 pages with every option', () => {
+    const estimate = calculateEstimate({
+      ...defaultSelections,
+      pages: 8,
+      standardForms: 4,
+      advancedForms: 4,
+      payment: true,
+      emailAutomation: true,
+      calendarBooking: true,
+      integrationLevel: 'advanced',
+      userAuthentication: true,
+      multiUserDashboard: true,
+    })
+
+    expect(estimate).toEqual({
+      midpoint: 1200,
+      low: 1200,
+      high: 1200,
+    })
+  })
+
+  it('adds cost above Advanced when the website has more than 8 pages', () => {
     const estimate = calculateEstimate({
       ...defaultSelections,
       pages: 12,
@@ -38,9 +59,9 @@ describe('calculateEstimate', () => {
     })
 
     expect(estimate).toEqual({
-      midpoint: 1200,
-      low: 1075,
-      high: 1200,
+      midpoint: 1600,
+      low: 1600,
+      high: 1600,
     })
   })
 
@@ -61,7 +82,7 @@ describe('calculateEstimate', () => {
 
     expect(estimate).toEqual({
       midpoint: 3200,
-      low: 2875,
+      low: 3200,
       high: 3200,
     })
   })
@@ -69,7 +90,7 @@ describe('calculateEstimate', () => {
   it('uses one firm package price in the summary at the Advanced ceiling', () => {
     const selections = {
       ...defaultSelections,
-      pages: 12,
+      pages: 8,
       standardForms: 4,
       advancedForms: 4,
       payment: true,

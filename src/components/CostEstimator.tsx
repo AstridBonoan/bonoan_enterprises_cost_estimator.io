@@ -5,6 +5,7 @@ import {
   defaultSelections,
   estimatorConfig,
   summarizeSelections,
+  websitePageAddOnCost,
   type EstimatorSelections,
   type IntegrationLevel,
   type ProjectType,
@@ -107,7 +108,7 @@ export default function CostEstimator() {
   )
   const project = estimatorConfig.projectTypes[selections.projectType]
   const addOns = estimatorConfig.addOns[selections.projectType]
-  const isAtAdvancedCeiling = estimate.midpoint === project.maxPrice
+  const isAtAdvancedCeiling = estimate.midpoint >= project.maxPrice
 
   const update = <Key extends keyof EstimatorSelections>(
     key: Key,
@@ -219,7 +220,7 @@ export default function CostEstimator() {
               <SectionHeading
                 number={2}
                 title="How many pages?"
-                description="The first three pages are included in the website starting price."
+                description="The first three pages are included. Advanced package covers up to 8 pages; anything beyond that adds to the total."
               />
               <label
                 htmlFor="pages"
@@ -235,14 +236,21 @@ export default function CostEstimator() {
                 className={`${inputClasses} disabled:cursor-not-allowed disabled:opacity-70`}
               >
                 {Array.from({ length: 12 }, (_, index) => index + 1).map(
-                  (count) => (
-                    <option key={count} value={count}>
-                      {count} {count === 1 ? 'page' : 'pages'}
-                      {count > 3
-                        ? ` (+${currency.format((count - 3) * addOns.extraPage)})`
-                        : ''}
-                    </option>
-                  ),
+                  (count) => {
+                    const pageAddOn = websitePageAddOnCost(count)
+                    return (
+                      <option key={count} value={count}>
+                        {count} {count === 1 ? 'page' : 'pages'}
+                        {pageAddOn
+                          ? ` (+${currency.format(pageAddOn)}${
+                              count > project.advancedPackagePages
+                                ? ' · beyond Advanced'
+                                : ''
+                            })`
+                          : ''}
+                      </option>
+                    )
+                  },
                 )}
               </select>
             </section>
@@ -430,7 +438,9 @@ export default function CostEstimator() {
               </p>
               <p className="mt-5 text-sm text-slate-300">
                 {isAtAdvancedCeiling
-                  ? 'Advanced package price'
+                  ? estimate.midpoint > project.maxPrice
+                    ? 'Project price'
+                    : 'Advanced package price'
                   : 'Estimated investment'}
               </p>
               <p className="mt-1 text-3xl font-black tracking-tight sm:text-4xl">
@@ -459,8 +469,9 @@ export default function CostEstimator() {
             <div className="space-y-4 border-b border-white/10 p-6 text-sm leading-6 text-slate-300 sm:p-8">
               {isAtAdvancedCeiling ? (
                 <p>
-                  This scope reaches the Advanced package ceiling, so a lower
-                  price range is not shown.
+                  {estimate.midpoint > project.maxPrice
+                    ? 'This scope goes beyond the Advanced package page limit, so the price includes those extra pages.'
+                    : 'This scope reaches the Advanced package ceiling, so a lower price range is not shown.'}
                 </p>
               ) : (
                 <p>

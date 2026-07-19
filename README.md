@@ -24,11 +24,15 @@ without touching the estimator UI.
 
 The estimator starts at the selected project type's base price, adds each selected
 feature, and displays a range of about ±10% around the recommended offer. Add-on
-prices are tuned so selecting every option reaches — but does not exceed — the
-Advanced package price:
+prices are tuned so selecting every option at the Advanced package scope reaches
+the Advanced package price:
 
-- Website Creation: **$500 – $1,200**
+- Website Creation: **$500 – $1,200** for up to **8 pages**
+- Pages beyond 8 add **$100 each** on top of the Advanced package
 - SaaS Tools: **$1,000 – $3,200**
+
+When the Advanced ceiling is reached or exceeded, the estimator shows one firm
+price instead of a lower range.
 
 ## Connect Formspree
 
