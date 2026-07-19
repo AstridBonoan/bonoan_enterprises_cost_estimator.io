@@ -217,7 +217,11 @@ export default function CostEstimator() {
             <SectionHeading
               number={selections.projectType === 'website' ? 3 : 2}
               title="What forms will you need?"
-              description="Contact forms are covered in the website base. Count additional purpose-built forms here."
+              description={
+                selections.projectType === 'website'
+                  ? 'One contact form is covered in the website base. Count any additional forms here.'
+                  : 'Count each purpose-built form your tool needs.'
+              }
             />
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="block">
@@ -225,7 +229,7 @@ export default function CostEstimator() {
                   Standard forms
                 </span>
                 <span className="mb-3 block min-h-10 text-sm text-slate-500 dark:text-slate-400">
-                  Lead, application, or newsletter forms
+                  Contact, lead, application, or newsletter forms
                 </span>
                 <select
                   value={selections.standardForms}
