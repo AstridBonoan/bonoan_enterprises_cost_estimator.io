@@ -146,14 +146,16 @@ export default function CostEstimator() {
             Tell us what you need and get a practical ballpark estimate in a few
             minutes—no hourly-rate math or surprise-sized ranges.
           </p>
-          <div className="mt-8 inline-flex items-center gap-3 rounded-full bg-white py-2 pl-2.5 pr-6 shadow-md ring-1 ring-slate-200">
-            <img
-              src={`${import.meta.env.BASE_URL}logo-mark.png`}
-              alt="B&C Software & Web"
-              className="h-11 w-auto rounded-full object-cover"
-              width={176}
-              height={176}
-            />
+          <div className="mt-8 inline-flex items-center gap-3 rounded-full bg-white py-2 pl-2 pr-6 shadow-md ring-1 ring-slate-200">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-slate-200">
+              <img
+                src={`${import.meta.env.BASE_URL}bc-logo.png`}
+                alt="B&C Software & Web"
+                className="h-full w-full object-cover"
+                width={176}
+                height={176}
+              />
+            </span>
             <span className="text-sm font-bold text-slate-900">
               Powered By B&C Software&Web
             </span>
