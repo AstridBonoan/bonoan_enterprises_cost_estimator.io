@@ -97,8 +97,8 @@ function FeatureCheckbox({
 export default function CostEstimator() {
   const [selections, setSelections] =
     useState<EstimatorSelections>(defaultSelections)
-  // Formspree form ID for Bonoan Enterprises (https://formspree.io/f/mrenqoza).
-  const [formState, handleSubmit, resetForm] = useForm('mrenqoza')
+  // Formspree form ID (https://formspree.io/f/mojggrbk).
+  const [formState, handleSubmit, resetForm] = useForm('mojggrbk')
   const isLocked = formState.succeeded
 
   const estimate = useMemo(() => calculateEstimate(selections), [selections])

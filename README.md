@@ -36,12 +36,12 @@ price instead of a lower range.
 
 ## Connect Formspree
 
-The lead form submits to the Bonoan Enterprises Formspree endpoint
-(`https://formspree.io/f/mrenqoza`) via `@formspree/react`. To change it, update
+The lead form submits to the Formspree endpoint
+(`https://formspree.io/f/mojggrbk`) via `@formspree/react`. To change it, update
 the form ID in `src/components/CostEstimator.tsx`:
 
 ```ts
-useForm('mrenqoza')
+useForm('mojggrbk')
 ```
 
 The form sends the lead's contact information, message, selected scope, displayed
